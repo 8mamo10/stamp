@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4CAF50">
+  <title>Admin Panel - Stamp Card</title>
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="auth-screen">
+    <div class="container">
+      <div class="card" style="margin-top: 60px;">
+        <h1 class="text-center mb-20">Admin Panel</h1>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label class="form-label">Email or Phone</label>
+            <input type="text" id="login-identifier" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" id="login-password" class="form-input" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App Screen -->
+  <div id="app-screen" class="hidden">
+    <!-- Header -->
+    <div class="header">
+      <h1>Admin Panel</h1>
+      <div class="header-actions">
+        <button class="btn btn-small btn-outline" id="logout-btn">Logout</button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+      <!-- Stores View -->
+      <div id="stores-view" class="container">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Stores</h2>
+            <button class="btn btn-small btn-primary" id="add-store-btn">Add Store</button>
+          </div>
+          <div id="stores-list" class="mt-20"></div>
+        </div>
+
+        <!-- Add Store Form -->
+        <div id="add-store-form" class="card hidden">
+          <h2 class="card-title">Add New Store</h2>
+          <form id="createStoreForm">
+            <div class="form-group">
+              <label class="form-label">Store Name</label>
+              <input type="text" id="store-name" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Owner Email (optional)</label>
+              <input type="email" id="owner-email" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Owner Phone (optional)</label>
+              <input type="tel" id="owner-phone" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Owner Password</label>
+              <input type="password" id="owner-password" class="form-input" minlength="6">
+            </div>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">
+              * If credentials are provided, a staff account will be created
+            </p>
+            <button type="submit" class="btn btn-primary">Create Store</button>
+            <button type="button" class="btn btn-outline mt-20" id="cancel-add-store">Cancel</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Analytics View -->
+      <div id="analytics-view" class="container hidden">
+        <div id="analytics-content"></div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <a href="#" class="nav-item active" data-view="stores">
+        <div style="font-size: 1.5rem;">🏪</div>
+        <div>Stores</div>
+      </a>
+      <a href="#" class="nav-item" data-view="analytics">
+        <div style="font-size: 1.5rem;">📊</div>
+        <div>Analytics</div>
+      </a>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

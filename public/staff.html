@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4CAF50">
+  <title>Staff Portal - Stamp Card</title>
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- QR Code libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="auth-screen">
+    <div class="container">
+      <div class="card" style="margin-top: 60px;">
+        <h1 class="text-center mb-20">Staff Portal</h1>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label class="form-label">Email or Phone</label>
+            <input type="text" id="login-identifier" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" id="login-password" class="form-input" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App Screen -->
+  <div id="app-screen" class="hidden">
+    <!-- Header -->
+    <div class="header">
+      <h1 id="store-name">Staff Portal</h1>
+      <div class="header-actions">
+        <button class="btn btn-small btn-outline" id="logout-btn">Logout</button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+      <!-- Issue Stamp View -->
+      <div id="issue-view" class="container">
+        <div class="card">
+          <h2 class="card-title">Issue Stamp</h2>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+            <button class="btn btn-primary" id="scan-qr-btn">Scan QR Code</button>
+            <button class="btn btn-outline" id="manual-entry-btn">Manual Entry</button>
+          </div>
+
+          <!-- QR Scanner -->
+          <div id="scanner-container" class="hidden">
+            <div id="qr-scanner"></div>
+            <button class="btn btn-danger mt-20" id="stop-scan-btn">Stop Scanner</button>
+          </div>
+
+          <!-- Manual Entry -->
+          <div id="manual-entry" class="hidden">
+            <form id="issueStampForm">
+              <div class="form-group">
+                <label class="form-label">Customer Email or Phone</label>
+                <input type="text" id="customer-identifier" class="form-input" placeholder="email@example.com or phone" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Purchase Amount (optional)</label>
+                <input type="number" id="purchase-amount" class="form-input" step="0.01" min="0">
+              </div>
+              <button type="submit" class="btn btn-primary">Issue Stamp</button>
+              <button type="button" class="btn btn-outline mt-20" id="cancel-manual-btn">Cancel</button>
+            </form>
+          </div>
+
+          <div id="issue-result" class="mt-20"></div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+          <h2 class="card-title">Recent Activity</h2>
+          <div id="recent-activity"></div>
+        </div>
+      </div>
+
+      <!-- Redeem View -->
+      <div id="redeem-view" class="container hidden">
+        <div class="card">
+          <h2 class="card-title">Redeem Reward</h2>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+            <button class="btn btn-primary" id="scan-reward-qr-btn">Scan QR Code</button>
+            <button class="btn btn-outline" id="manual-code-btn">Enter Code</button>
+          </div>
+
+          <!-- QR Scanner for rewards -->
+          <div id="reward-scanner-container" class="hidden">
+            <div id="reward-qr-scanner"></div>
+            <button class="btn btn-danger mt-20" id="stop-reward-scan-btn">Stop Scanner</button>
+          </div>
+
+          <!-- Manual Code Entry -->
+          <div id="manual-code-entry" class="hidden">
+            <form id="redeemForm">
+              <div class="form-group">
+                <label class="form-label">Reward Code</label>
+                <input type="text" id="reward-code" class="form-input" placeholder="ABCD1234" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Redeem</button>
+              <button type="button" class="btn btn-outline mt-20" id="cancel-code-btn">Cancel</button>
+            </form>
+          </div>
+
+          <div id="redeem-result" class="mt-20"></div>
+        </div>
+      </div>
+
+      <!-- Analytics View -->
+      <div id="analytics-view" class="container hidden">
+        <div id="analytics-content"></div>
+      </div>
+
+      <!-- Settings View -->
+      <div id="settings-view" class="container hidden">
+        <div class="card">
+          <h2 class="card-title">Stamp Card Settings</h2>
+          <form id="cardSettingsForm">
+            <div class="form-group">
+              <label class="form-label">Card Name</label>
+              <input type="text" id="card-name" class="form-input" placeholder="Buy 10, Get 1 Free" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Stamps Required</label>
+              <input type="number" id="stamps-required" class="form-input" min="1" value="10" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Reward Description</label>
+              <input type="text" id="reward-description" class="form-input" placeholder="1 free coffee" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Rule Type</label>
+              <select id="rule-type" class="form-select" required>
+                <option value="visit">Visit (any purchase)</option>
+                <option value="amount">Minimum purchase amount</option>
+              </select>
+            </div>
+            <div class="form-group" id="rule-value-group">
+              <label class="form-label">Minimum Amount</label>
+              <input type="number" id="rule-value" class="form-input" step="0.01" min="0" value="0">
+            </div>
+            <button type="submit" class="btn btn-primary">Create Card</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <a href="#" class="nav-item active" data-view="issue">
+        <div style="font-size: 1.5rem;">✓</div>
+        <div>Issue</div>
+      </a>
+      <a href="#" class="nav-item" data-view="redeem">
+        <div style="font-size: 1.5rem;">🎁</div>
+        <div>Redeem</div>
+      </a>
+      <a href="#" class="nav-item" data-view="analytics">
+        <div style="font-size: 1.5rem;">📊</div>
+        <div>Analytics</div>
+      </a>
+      <a href="#" class="nav-item" data-view="settings">
+        <div style="font-size: 1.5rem;">⚙️</div>
+        <div>Settings</div>
+      </a>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/qr.js"></script>
+  <script src="js/staff.js"></script>
+</body>
+</html>
