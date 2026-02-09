@@ -3,26 +3,27 @@
  */
 
 // UPDATE THIS with your deployed GAS web app URL
-const API_URL = 'YOUR_GAS_WEB_APP_URL_HERE';
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbwLxPirXRQ16xg8u5yY4SbHV6Oz_JvUaUBlDiSVuPrTQ8r3w9wf4m91Zc8OxOzEX4-RPw/exec";
 
 /**
  * Make API request
  */
-async function apiRequest(path, method = 'GET', data = null) {
-  const token = localStorage.getItem('authToken');
+async function apiRequest(path, method = "GET", data = null) {
+  const token = localStorage.getItem("authToken");
 
   try {
     let url = `${API_URL}?path=${path}`;
     let options = {
       method: method,
       headers: {
-        'Content-Type': 'application/json',
-      }
+        "Content-Type": "application/json",
+      },
     };
 
-    if (method === 'GET' && token) {
+    if (method === "GET" && token) {
       url += `&token=${token}`;
-    } else if (method === 'POST') {
+    } else if (method === "POST") {
       const body = data || {};
       if (token) {
         body.token = token;
@@ -39,7 +40,7 @@ async function apiRequest(path, method = 'GET', data = null) {
 
     return result;
   } catch (error) {
-    console.error('API Error:', error);
+    console.error("API Error:", error);
     throw error;
   }
 }
@@ -48,32 +49,37 @@ async function apiRequest(path, method = 'GET', data = null) {
  * Auth API
  */
 const AuthAPI = {
-  register: (email, phone, password, role = 'customer') => {
-    return apiRequest('auth/register', 'POST', { email, phone, password, role });
+  register: (email, phone, password, role = "customer") => {
+    return apiRequest("auth/register", "POST", {
+      email,
+      phone,
+      password,
+      role,
+    });
   },
 
   login: (email, phone, password) => {
-    return apiRequest('auth/login', 'POST', { email, phone, password });
+    return apiRequest("auth/login", "POST", { email, phone, password });
   },
 
   logout: () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
   },
 
   isLoggedIn: () => {
-    return !!localStorage.getItem('authToken');
+    return !!localStorage.getItem("authToken");
   },
 
   getUser: () => {
-    const userStr = localStorage.getItem('user');
+    const userStr = localStorage.getItem("user");
     return userStr ? JSON.parse(userStr) : null;
   },
 
   saveAuth: (token, user) => {
-    localStorage.setItem('authToken', token);
-    localStorage.setItem('user', JSON.stringify(user));
-  }
+    localStorage.setItem("authToken", token);
+    localStorage.setItem("user", JSON.stringify(user));
+  },
 };
 
 /**
@@ -81,16 +87,16 @@ const AuthAPI = {
  */
 const CustomerAPI = {
   getCards: () => {
-    return apiRequest('customer/cards', 'GET');
+    return apiRequest("customer/cards", "GET");
   },
 
   getRewards: () => {
-    return apiRequest('customer/rewards', 'GET');
+    return apiRequest("customer/rewards", "GET");
   },
 
   redeemReward: (rewardId) => {
-    return apiRequest('customer/redeemReward', 'POST', { rewardId });
-  }
+    return apiRequest("customer/redeemReward", "POST", { rewardId });
+  },
 };
 
 /**
@@ -98,26 +104,35 @@ const CustomerAPI = {
  */
 const StaffAPI = {
   issueStamp: (customerIdentifier, purchaseAmount) => {
-    return apiRequest('staff/issueStamp', 'POST', { customerIdentifier, purchaseAmount });
+    return apiRequest("staff/issueStamp", "POST", {
+      customerIdentifier,
+      purchaseAmount,
+    });
   },
 
-  createCard: (cardName, stampsRequired, rewardDescription, ruleType, ruleValue) => {
-    return apiRequest('staff/createCard', 'POST', {
+  createCard: (
+    cardName,
+    stampsRequired,
+    rewardDescription,
+    ruleType,
+    ruleValue
+  ) => {
+    return apiRequest("staff/createCard", "POST", {
       cardName,
       stampsRequired,
       rewardDescription,
       ruleType,
-      ruleValue
+      ruleValue,
     });
   },
 
   confirmRedemption: (rewardCode) => {
-    return apiRequest('staff/confirmRedemption', 'POST', { rewardCode });
+    return apiRequest("staff/confirmRedemption", "POST", { rewardCode });
   },
 
   getAnalytics: () => {
-    return apiRequest('store/analytics', 'GET');
-  }
+    return apiRequest("store/analytics", "GET");
+  },
 };
 
 /**
@@ -125,23 +140,23 @@ const StaffAPI = {
  */
 const AdminAPI = {
   createStore: (storeName, ownerEmail, ownerPhone, ownerPassword) => {
-    return apiRequest('admin/createStore', 'POST', {
+    return apiRequest("admin/createStore", "POST", {
       storeName,
       ownerEmail,
       ownerPhone,
-      ownerPassword
+      ownerPassword,
     });
   },
 
   getStores: () => {
-    return apiRequest('admin/stores', 'GET');
+    return apiRequest("admin/stores", "GET");
   },
 
   updateStore: (storeId, updates) => {
-    return apiRequest('admin/updateStore', 'POST', { storeId, updates });
+    return apiRequest("admin/updateStore", "POST", { storeId, updates });
   },
 
   getAnalytics: () => {
-    return apiRequest('admin/analytics', 'GET');
-  }
+    return apiRequest("admin/analytics", "GET");
+  },
 };
