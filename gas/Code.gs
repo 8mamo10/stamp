@@ -4,7 +4,7 @@
  */
 
 // Configuration - UPDATE THIS with your spreadsheet ID
-const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID_HERE';
+const SPREADSHEET_ID = "1rAxbjG-NZq1QrHtTW-NGR5qCyYbMKYMV2KoL8G6jIyM";
 
 /**
  * Handle GET requests
@@ -12,47 +12,61 @@ const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID_HERE';
 function doGet(e) {
   const path = e.parameter.path;
   const token = e.parameter.token;
+  const page = e.parameter.page;
+
+  // Serve HTML pages
+  if (!path || page) {
+    const htmlPage = page || 'index';
+    try {
+      return HtmlService.createHtmlOutputFromFile(htmlPage)
+        .setTitle('Stamp Card')
+        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+    } catch (error) {
+      Logger.log("Error loading HTML: " + error.message);
+      return HtmlService.createHtmlOutput('<h1>Page not found</h1>');
+    }
+  }
 
   // Verify authentication for protected endpoints
   const user = verifyToken(token);
 
   try {
-    switch(path) {
-      case 'customer/cards':
-        if (!user || user.role !== 'customer') {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+    switch (path) {
+      case "customer/cards":
+        if (!user || user.role !== "customer") {
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
         return jsonResponse(getCustomerCards(user.userId));
 
-      case 'customer/rewards':
-        if (!user || user.role !== 'customer') {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+      case "customer/rewards":
+        if (!user || user.role !== "customer") {
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
         return jsonResponse(getCustomerRewards(user.userId));
 
-      case 'store/analytics':
-        if (!user || (user.role !== 'staff' && user.role !== 'admin')) {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+      case "store/analytics":
+        if (!user || (user.role !== "staff" && user.role !== "admin")) {
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
         return jsonResponse(getStoreAnalytics(user.storeId));
 
-      case 'admin/stores':
-        if (!user || user.role !== 'admin') {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+      case "admin/stores":
+        if (!user || user.role !== "admin") {
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
         return jsonResponse(getAllStores());
 
-      case 'admin/analytics':
-        if (!user || user.role !== 'admin') {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+      case "admin/analytics":
+        if (!user || user.role !== "admin") {
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
         return jsonResponse(getSystemAnalytics());
 
       default:
-        return jsonResponse({ error: 'Not found' }, 404);
+        return jsonResponse({ error: "Not found" }, 404);
     }
   } catch (error) {
-    Logger.log('Error in doGet: ' + error.message);
+    Logger.log("Error in doGet: " + error.message);
     return jsonResponse({ error: error.message }, 500);
   }
 }
@@ -66,60 +80,60 @@ function doPost(e) {
   const token = data.token || e.parameter.token;
 
   try {
-    switch(path) {
-      case 'auth/register':
+    switch (path) {
+      case "auth/register":
         return jsonResponse(registerUser(data));
 
-      case 'auth/login':
+      case "auth/login":
         return jsonResponse(login(data));
 
-      case 'staff/issueStamp':
+      case "staff/issueStamp":
         const staff = verifyToken(token);
-        if (!staff || staff.role !== 'staff') {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+        if (!staff || staff.role !== "staff") {
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
         return jsonResponse(issueStamp(data, staff));
 
-      case 'staff/createCard':
+      case "staff/createCard":
         const staffUser = verifyToken(token);
-        if (!staffUser || staffUser.role !== 'staff') {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+        if (!staffUser || staffUser.role !== "staff") {
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
         return jsonResponse(createStampCard(data, staffUser));
 
-      case 'customer/redeemReward':
+      case "customer/redeemReward":
         const customer = verifyToken(token);
-        if (!customer || customer.role !== 'customer') {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+        if (!customer || customer.role !== "customer") {
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
         return jsonResponse(markRewardForRedemption(data, customer));
 
-      case 'staff/confirmRedemption':
+      case "staff/confirmRedemption":
         const confirmStaff = verifyToken(token);
-        if (!confirmStaff || confirmStaff.role !== 'staff') {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+        if (!confirmStaff || confirmStaff.role !== "staff") {
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
         return jsonResponse(confirmRewardRedemption(data, confirmStaff));
 
-      case 'admin/createStore':
+      case "admin/createStore":
         const admin = verifyToken(token);
-        if (!admin || admin.role !== 'admin') {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+        if (!admin || admin.role !== "admin") {
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
         return jsonResponse(createStore(data, admin));
 
-      case 'admin/updateStore':
+      case "admin/updateStore":
         const updateAdmin = verifyToken(token);
-        if (!updateAdmin || updateAdmin.role !== 'admin') {
-          return jsonResponse({ error: 'Unauthorized' }, 401);
+        if (!updateAdmin || updateAdmin.role !== "admin") {
+          return jsonResponse({ error: "Unauthorized" }, 401);
         }
         return jsonResponse(updateStore(data, updateAdmin));
 
       default:
-        return jsonResponse({ error: 'Not found' }, 404);
+        return jsonResponse({ error: "Not found" }, 404);
     }
   } catch (error) {
-    Logger.log('Error in doPost: ' + error.message);
+    Logger.log("Error in doPost: " + error.message);
     return jsonResponse({ error: error.message }, 500);
   }
 }
@@ -145,4 +159,11 @@ function generateUUID() {
  */
 function getCurrentTimestamp() {
   return new Date().toISOString();
+}
+
+/**
+ * Include other HTML files (for templating)
+ */
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }

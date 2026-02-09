@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4CAF50">
+  <meta name="description" content="Digital stamp card for collecting rewards">
+  <title>Stamp Card</title>
+
+  <style>
+    <?!= include('styles.css'); ?>
+  </style>
+
+  <!-- QR Code library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <!-- Login/Register Screen -->
+  <div id="auth-screen">
+    <div class="container">
+      <div class="card" style="margin-top: 60px;">
+        <h1 class="text-center mb-20">Stamp Card</h1>
+
+        <div id="login-form">
+          <h2 class="card-title">Login</h2>
+          <form id="loginForm">
+            <div class="form-group">
+              <label class="form-label">Email or Phone</label>
+              <input type="text" id="login-identifier" class="form-input" placeholder="email@example.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" id="login-password" class="form-input" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+          <p class="text-center mt-20">
+            Don't have an account?
+            <a href="#" id="show-register" style="color: var(--primary-color); font-weight: 600;">Register</a>
+          </p>
+        </div>
+
+        <div id="register-form" class="hidden">
+          <h2 class="card-title">Register</h2>
+          <form id="registerForm">
+            <div class="form-group">
+              <label class="form-label">Email (optional)</label>
+              <input type="email" id="register-email" class="form-input" placeholder="email@example.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone (optional)</label>
+              <input type="tel" id="register-phone" class="form-input" placeholder="+1234567890">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" id="register-password" class="form-input" minlength="6" required>
+            </div>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">
+              * Provide at least email or phone number
+            </p>
+            <button type="submit" class="btn btn-primary">Register</button>
+          </form>
+          <p class="text-center mt-20">
+            Already have an account?
+            <a href="#" id="show-login" style="color: var(--primary-color); font-weight: 600;">Login</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App Screen -->
+  <div id="app-screen" class="hidden">
+    <!-- Header -->
+    <div class="header">
+      <h1>My Stamp Cards</h1>
+      <div class="header-actions">
+        <button class="btn btn-small btn-outline" id="show-qr-btn">My QR Code</button>
+        <button class="btn btn-small btn-outline" id="logout-btn">Logout</button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+      <!-- Cards View -->
+      <div id="cards-view" class="container">
+        <div id="cards-list"></div>
+      </div>
+
+      <!-- Rewards View -->
+      <div id="rewards-view" class="container hidden">
+        <div id="rewards-list"></div>
+      </div>
+
+      <!-- QR Code View -->
+      <div id="qr-view" class="container hidden">
+        <div class="card">
+          <h2 class="card-title text-center">Your QR Code</h2>
+          <p class="text-center" style="color: #666; margin-bottom: 20px;">
+            Show this QR code to store staff to collect stamps
+          </p>
+          <div class="qr-container">
+            <div id="customer-qr" class="qr-code"></div>
+          </div>
+          <p id="customer-id" class="text-center mt-20" style="font-size: 0.9rem; color: #666;"></p>
+          <button class="btn btn-outline mt-20" id="close-qr-btn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <a href="#" class="nav-item active" data-view="cards">
+        <div style="font-size: 1.5rem;">🎫</div>
+        <div>Cards</div>
+      </a>
+      <a href="#" class="nav-item" data-view="rewards">
+        <div style="font-size: 1.5rem;">🎁</div>
+        <div>Rewards</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Reward Detail Modal -->
+  <div id="reward-modal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px;">
+    <div class="card" style="max-width: 400px; width: 100%;">
+      <h2 class="card-title text-center">Redeem Reward</h2>
+      <div id="reward-detail"></div>
+      <div class="qr-container">
+        <div id="reward-qr" class="qr-code"></div>
+      </div>
+      <p class="text-center" style="color: #666; margin-top: 20px; font-size: 0.9rem;">
+        Show this QR code to store staff
+      </p>
+      <button class="btn btn-outline mt-20" id="close-reward-modal">Close</button>
+    </div>
+  </div>
+
+  <script>
+    <?!= include('api.js'); ?>
+  </script>
+  <script>
+    <?!= include('qr.js'); ?>
+  </script>
+  <script>
+    <?!= include('app.js'); ?>
+  </script>
+</body>
+</html>

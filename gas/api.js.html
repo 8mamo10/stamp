@@ -1,0 +1,161 @@
+/**
+ * API Client for communicating with GAS backend
+ */
+
+// Use the same GAS web app URL (no CORS issues when served from GAS)
+const API_URL = window.location.origin + window.location.pathname;
+
+/**
+ * Make API request
+ */
+async function apiRequest(path, method = "GET", data = null) {
+  const token = localStorage.getItem("authToken");
+
+  try {
+    let url = `${API_URL}?path=${path}`;
+    let options = {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    if (method === "GET" && token) {
+      url += `&token=${token}`;
+    } else if (method === "POST") {
+      const body = data || {};
+      if (token) {
+        body.token = token;
+      }
+      options.body = JSON.stringify(body);
+    }
+
+    const response = await fetch(url, options);
+    const result = await response.json();
+
+    if (!result.success && result.error) {
+      throw new Error(result.error);
+    }
+
+    return result;
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
+  }
+}
+
+/**
+ * Auth API
+ */
+const AuthAPI = {
+  register: (email, phone, password, role = "customer") => {
+    return apiRequest("auth/register", "POST", {
+      email,
+      phone,
+      password,
+      role,
+    });
+  },
+
+  login: (email, phone, password) => {
+    return apiRequest("auth/login", "POST", { email, phone, password });
+  },
+
+  logout: () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+  },
+
+  isLoggedIn: () => {
+    return !!localStorage.getItem("authToken");
+  },
+
+  getUser: () => {
+    const userStr = localStorage.getItem("user");
+    return userStr ? JSON.parse(userStr) : null;
+  },
+
+  saveAuth: (token, user) => {
+    localStorage.setItem("authToken", token);
+    localStorage.setItem("user", JSON.stringify(user));
+  },
+};
+
+/**
+ * Customer API
+ */
+const CustomerAPI = {
+  getCards: () => {
+    return apiRequest("customer/cards", "GET");
+  },
+
+  getRewards: () => {
+    return apiRequest("customer/rewards", "GET");
+  },
+
+  redeemReward: (rewardId) => {
+    return apiRequest("customer/redeemReward", "POST", { rewardId });
+  },
+};
+
+/**
+ * Staff API
+ */
+const StaffAPI = {
+  issueStamp: (customerIdentifier, purchaseAmount) => {
+    return apiRequest("staff/issueStamp", "POST", {
+      customerIdentifier,
+      purchaseAmount,
+    });
+  },
+
+  createCard: (
+    cardName,
+    stampsRequired,
+    rewardDescription,
+    ruleType,
+    ruleValue
+  ) => {
+    return apiRequest("staff/createCard", "POST", {
+      cardName,
+      stampsRequired,
+      rewardDescription,
+      ruleType,
+      ruleValue,
+    });
+  },
+
+  confirmRedemption: (rewardCode) => {
+    return apiRequest("staff/confirmRedemption", "POST", { rewardCode });
+  },
+
+  getAnalytics: () => {
+    return apiRequest("store/analytics", "GET");
+  },
+};
+
+/**
+ * Admin API
+ */
+const AdminAPI = {
+  createStore: (storeName, ownerEmail, ownerPhone, ownerPassword) => {
+    return apiRequest("admin/createStore", "POST", {
+      storeName,
+      ownerEmail,
+      ownerPhone,
+      ownerPassword,
+    });
+  },
+
+  getStores: () => {
+    return apiRequest("admin/stores", "GET");
+  },
+
+  updateStore: (storeId, updates) => {
+    return apiRequest("admin/updateStore", "POST", { storeId, updates });
+  },
+
+  getAnalytics: () => {
+    return apiRequest("admin/analytics", "GET");
+  },
+};
