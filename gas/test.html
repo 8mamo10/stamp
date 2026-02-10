@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>API Test</title>
+</head>
+<body>
+  <h1>API Test Page</h1>
+  <button onclick="testGET()">Test GET</button>
+  <button onclick="testPOST()">Test POST</button>
+  <button onclick="testLogin()">Test Login</button>
+  <pre id="result"></pre>
+
+  <script>
+    const API_URL = window.location.origin + window.location.pathname.split('?')[0];
+
+    function log(msg) {
+      document.getElementById('result').textContent += msg + '\n';
+      console.log(msg);
+    }
+
+    // Log the API_URL on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      log('Current URL: ' + window.location.href);
+      log('Origin: ' + window.location.origin);
+      log('Pathname: ' + window.location.pathname);
+      log('API_URL: ' + API_URL);
+    });
+
+    async function testGET() {
+      log('--- Testing GET ---');
+      log('URL: ' + API_URL + '?path=test');
+      try {
+        const response = await fetch(API_URL + '?path=test');
+        const text = await response.text();
+        log('Response: ' + text);
+      } catch (error) {
+        log('Error: ' + error.message);
+      }
+    }
+
+    async function testPOST() {
+      log('\n--- Testing POST ---');
+      const url = API_URL + '?path=test';
+      log('URL: ' + url);
+      log('Body: ' + JSON.stringify({ test: 'data' }));
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ test: 'data' })
+        });
+        log('Status: ' + response.status);
+        const text = await response.text();
+        log('Response: ' + text);
+      } catch (error) {
+        log('Error: ' + error.message);
+      }
+    }
+
+    async function testLogin() {
+      log('\n--- Testing Login ---');
+      const url = API_URL + '?path=auth/login';
+      const loginData = {
+        email: 'admin@example.com',
+        password: 'YOUR_PASSWORD'  // Change this
+      };
+      log('URL: ' + url);
+      log('Body: ' + JSON.stringify(loginData));
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(loginData)
+        });
+        log('Status: ' + response.status);
+        const text = await response.text();
+        log('Response: ' + text.substring(0, 500));
+      } catch (error) {
+        log('Error: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

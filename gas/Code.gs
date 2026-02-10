@@ -27,6 +27,11 @@ function doGet(e) {
   const token = e.parameter.token;
   const page = e.parameter.page;
 
+  // Simple test endpoint
+  if (path === "test") {
+    return jsonResponse({ success: true, message: "API is working!", timestamp: new Date().toISOString() });
+  }
+
   // Serve HTML pages
   if (!path || page) {
     const htmlPage = page || "index";
@@ -105,6 +110,12 @@ function doPost(e) {
   const token = data.token || e.parameter.token;
 
   try {
+    // Test POST endpoint
+    if (path === "test") {
+      Logger.log("Test POST received with data: " + JSON.stringify(data));
+      return jsonResponse({ success: true, message: "POST is working!", data: data });
+    }
+
     switch (path) {
       case "auth/register":
         return jsonResponse(registerUser(data));
@@ -194,4 +205,12 @@ function getCurrentTimestamp() {
  */
 function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
+
+/**
+ * Get the web app URL for API calls
+ * This function is called from the HTML template to inject the correct URL
+ */
+function getWebAppUrl() {
+  return ScriptApp.getService().getUrl();
 }

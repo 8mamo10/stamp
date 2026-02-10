@@ -103,6 +103,10 @@
   </div>
 
   <script>
+    // Inject the correct API URL from server
+    var API_URL = '<?= getWebAppUrl() ?>';
+  </script>
+  <script>
     <?!= include('api.js.html'); ?>
   </script>
   <script>

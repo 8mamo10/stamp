@@ -2,9 +2,9 @@
  * API Client for communicating with GAS backend
  */
 
-// Use the same GAS web app URL (no CORS issues when served from GAS)
-// Remove query parameters from pathname to get clean base URL
-const API_URL = window.location.origin + window.location.pathname.split('?')[0];
+// API URL will be injected by the server
+// This variable will be set by the template in each HTML file
+var API_URL;
 
 /**
  * Make API request
