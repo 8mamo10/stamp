@@ -90,7 +90,18 @@ function doGet(e) {
  */
 function doPost(e) {
   const path = e.parameter.path;
-  const data = JSON.parse(e.postData.contents);
+
+  // Parse request data with error handling
+  let data;
+  try {
+    data = e.postData && e.postData.contents
+      ? JSON.parse(e.postData.contents)
+      : {};
+  } catch (parseError) {
+    Logger.log("Error parsing POST data: " + parseError.message);
+    return jsonResponse({ success: false, error: "Invalid JSON data" }, 400);
+  }
+
   const token = data.token || e.parameter.token;
 
   try {
@@ -99,7 +110,10 @@ function doPost(e) {
         return jsonResponse(registerUser(data));
 
       case "auth/login":
-        return jsonResponse(login(data));
+        Logger.log("Login attempt for: " + (data.email || data.phone));
+        const loginResult = login(data);
+        Logger.log("Login successful for: " + loginResult.user.email);
+        return jsonResponse(loginResult);
 
       case "staff/issueStamp":
         const staff = verifyToken(token);

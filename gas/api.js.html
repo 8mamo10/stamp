@@ -3,7 +3,8 @@
  */
 
 // Use the same GAS web app URL (no CORS issues when served from GAS)
-const API_URL = window.location.origin + window.location.pathname;
+// Remove query parameters from pathname to get clean base URL
+const API_URL = window.location.origin + window.location.pathname.split('?')[0];
 
 /**
  * Make API request
@@ -30,8 +31,16 @@ async function apiRequest(path, method = "GET", data = null) {
       options.body = JSON.stringify(body);
     }
 
+    console.log('API Request:', method, url, data);
+
     const response = await fetch(url, options);
-    const result = await response.json();
+
+    console.log('API Response status:', response.status);
+
+    const responseText = await response.text();
+    console.log('API Response text:', responseText.substring(0, 200));
+
+    const result = JSON.parse(responseText);
 
     if (!result.success && result.error) {
       throw new Error(result.error);
