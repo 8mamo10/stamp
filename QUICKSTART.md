@@ -30,7 +30,7 @@ Everything is served from Google Apps Script, eliminating CORS issues and simpli
 1. Open [Google Apps Script](https://script.google.com)
 2. Create new project
 3. Upload all files from `/gas` folder:
-   - **Script files (.gs)**: Code.gs, Auth.gs, Database.gs, StampService.gs, RewardService.gs
+   - **Script files (.gs)**: Code.gs, Auth.gs, Database.gs, StampService.gs, RewardService.gs, StoreService.gs
    - **HTML files (.html)**: index.html, staff.html, admin.html, styles.css.html, api.js.html, app.js.html, staff.js.html, admin.js.html, qr.js.html
 4. Update `SPREADSHEET_ID` in `Code.gs` with your Spreadsheet ID
 5. Deploy → New deployment → Web app
@@ -92,6 +92,7 @@ function createAdmin() {
   Database.gs       - Database operations
   StampService.gs   - Stamp logic
   RewardService.gs  - Reward logic
+  StoreService.gs   - Store management and analytics
 
   # HTML Files (frontend)
   index.html        - Customer app

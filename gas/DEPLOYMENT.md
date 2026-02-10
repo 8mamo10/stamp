@@ -13,6 +13,7 @@ Upload all files from the `/gas/` directory to your GAS project:
 - Database.gs
 - StampService.gs
 - RewardService.gs
+- StoreService.gs
 
 ### HTML Files (.html)
 - index.html (Customer app)
