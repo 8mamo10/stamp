@@ -4,7 +4,7 @@
  */
 
 // Configuration - UPDATE THIS with your spreadsheet ID
-const SPREADSHEET_ID = "1rAxbjG-NZq1QrHtTW-NGR5qCyYbMKYMV2KoL8G6jIyM";
+const SPREADSHEET_ID = "YOUR_SPREADSHEET_ID_HERE";
 
 /**
  * Handle GET requests
@@ -16,14 +16,14 @@ function doGet(e) {
 
   // Serve HTML pages
   if (!path || page) {
-    const htmlPage = page || 'index';
+    const htmlPage = page || "index";
     try {
       return HtmlService.createHtmlOutputFromFile(htmlPage)
-        .setTitle('Stamp Card')
+        .setTitle("Stamp Card")
         .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
     } catch (error) {
       Logger.log("Error loading HTML: " + error.message);
-      return HtmlService.createHtmlOutput('<h1>Page not found</h1>');
+      return HtmlService.createHtmlOutput("<h1>Page not found</h1>");
     }
   }
 
