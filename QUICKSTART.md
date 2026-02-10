@@ -32,7 +32,10 @@ Everything is served from Google Apps Script, eliminating CORS issues and simpli
 3. Upload all files from `/gas` folder:
    - **Script files (.gs)**: Code.gs, Auth.gs, Database.gs, StampService.gs, RewardService.gs, StoreService.gs
    - **HTML files (.html)**: index.html, staff.html, admin.html, styles.css.html, api.js.html, app.js.html, staff.js.html, admin.js.html, qr.js.html
-4. Update `SPREADSHEET_ID` in `Code.gs` with your Spreadsheet ID
+4. Configure Spreadsheet ID:
+   - Click gear icon ⚙️ (Project Settings)
+   - Scroll to "Script Properties"
+   - Add property: Key=`SPREADSHEET_ID`, Value=your spreadsheet ID
 5. Deploy → New deployment → Web app
    - **Execute as**: Me
    - **Who has access**: Anyone

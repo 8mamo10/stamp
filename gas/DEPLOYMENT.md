@@ -41,8 +41,13 @@ Upload all files from the `/gas/` directory to your GAS project:
      - Name it exactly as shown above (including `.js` or `.css` before `.html`)
      - Paste the content
 
-3. **Update Configuration**
-   - In `Code.gs`, update the `SPREADSHEET_ID` constant with your Google Sheet ID
+3. **Configure Spreadsheet ID**
+   - In GAS editor, click the gear icon (⚙️) "Project Settings"
+   - Scroll down to "Script Properties"
+   - Click "Add script property"
+   - Key: `SPREADSHEET_ID`
+   - Value: Your Google Sheet ID (from the URL)
+   - Click "Save script properties"
 
 4. **Deploy as Web App**
    - Click "Deploy" → "New deployment"

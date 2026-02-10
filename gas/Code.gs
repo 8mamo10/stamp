@@ -3,8 +3,21 @@
  * Handles all HTTP requests (GET and POST)
  */
 
-// Configuration - UPDATE THIS with your spreadsheet ID
-const SPREADSHEET_ID = "YOUR_SPREADSHEET_ID_HERE";
+// Configuration - Set via Script Properties
+// Go to Project Settings (gear icon) → Script Properties → Add property
+// Key: SPREADSHEET_ID, Value: your_spreadsheet_id
+function getSpreadsheetId() {
+  const scriptProperties = PropertiesService.getScriptProperties();
+  const spreadsheetId = scriptProperties.getProperty('SPREADSHEET_ID');
+
+  if (!spreadsheetId) {
+    throw new Error('SPREADSHEET_ID not configured. Go to Project Settings → Script Properties and add SPREADSHEET_ID');
+  }
+
+  return spreadsheetId;
+}
+
+const SPREADSHEET_ID = getSpreadsheetId();
 
 /**
  * Handle GET requests
