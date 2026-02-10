@@ -1,6 +1,6 @@
 # Stamp Card Web Service
 
-A digital stamp card system for stores, built as a PWA and deployed on Google Apps Script.
+A digital stamp card system for stores, built as a PWA and deployed entirely on Google Apps Script.
 
 ## Features
 
@@ -13,20 +13,37 @@ A digital stamp card system for stores, built as a PWA and deployed on Google Ap
 - Frontend: HTML/CSS/JavaScript PWA
 - Backend: Google Apps Script
 - Database: Google Sheets
+- Deployment: All-in-one on Google Apps Script (no external hosting needed)
 
-## Setup
+## Quick Start
 
-1. Create a new Google Sheets spreadsheet
-2. Set up the required sheets (see CLAUDE.md for schema)
-3. Create a new Google Apps Script project
-4. Copy code from `/gas` folder to GAS editor
-5. Deploy as web app
-6. Update API endpoint in frontend code
-7. Host frontend files or serve from GAS
+See **[QUICKSTART.md](QUICKSTART.md)** for step-by-step setup instructions (15 minutes).
 
-## Project Structure
+## Setup Overview
 
-See CLAUDE.md for detailed architecture and development guide.
+1. Create a Google Sheets database with required sheets
+2. Create a Google Apps Script project
+3. Upload all files from `/gas` folder (includes both backend and frontend)
+4. Update `SPREADSHEET_ID` in Code.gs
+5. Deploy as web app with "Anyone" access
+6. Access via:
+   - Customer: `https://script.google.com/.../exec`
+   - Staff: `https://script.google.com/.../exec?page=staff`
+   - Admin: `https://script.google.com/.../exec?page=admin`
+
+## Key Benefits
+
+- **No CORS issues**: Frontend and backend served from same domain
+- **No external hosting**: Everything runs on Google's infrastructure
+- **Free tier**: Suitable for small to medium-sized stores
+- **HTTPS by default**: Secure and works with QR code scanning on mobile
+
+## Documentation
+
+- **[QUICKSTART.md](QUICKSTART.md)** - Get started in 15 minutes
+- **[gas/DEPLOYMENT.md](gas/DEPLOYMENT.md)** - Detailed deployment instructions
+- **[DATABASE_SCHEMA.md](DATABASE_SCHEMA.md)** - Database structure
+- **[CLAUDE.md](CLAUDE.md)** - Architecture and development guide
 
 ## License
 

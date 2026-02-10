@@ -4,10 +4,11 @@ Get your Stamp Card system up and running in 15 minutes!
 
 ## Overview
 
-This system has three main components:
+This system has two main components:
 1. **Google Sheets** - Database
-2. **Google Apps Script** - Backend API
-3. **Web Frontend** - Customer, Staff, and Admin interfaces
+2. **Google Apps Script** - Backend API + Frontend (all-in-one)
+
+Everything is served from Google Apps Script, eliminating CORS issues and simplifying deployment.
 
 ## Quick Setup (15 minutes)
 
@@ -22,23 +23,22 @@ This system has three main components:
    - Transactions
    - Rewards
 3. Copy headers from `DATABASE_SCHEMA.md` to each sheet (just the first row)
-4. Copy the Spreadsheet ID from the URL
+4. Copy the Spreadsheet ID from the URL (it's the long string in the URL)
 
-### 2. Backend Setup (5 minutes)
+### 2. Apps Script Setup (8 minutes)
 
 1. Open [Google Apps Script](https://script.google.com)
 2. Create new project
-3. Copy all `.gs` files from `/gas` folder to the project
-4. Update `SPREADSHEET_ID` in `Code.gs` with your ID
-5. Deploy → New deployment → Web app → Deploy
-6. Copy the Web App URL
+3. Upload all files from `/gas` folder:
+   - **Script files (.gs)**: Code.gs, Auth.gs, Database.gs, StampService.gs, RewardService.gs
+   - **HTML files (.html)**: index.html, staff.html, admin.html, styles.css.html, api.js.html, app.js.html, staff.js.html, admin.js.html, qr.js.html
+4. Update `SPREADSHEET_ID` in `Code.gs` with your Spreadsheet ID
+5. Deploy → New deployment → Web app
+   - **Execute as**: Me
+   - **Who has access**: Anyone
+6. Click Deploy and copy the Web App URL
 
-### 3. Frontend Setup (3 minutes)
-
-1. Update `API_URL` in `/public/js/api.js` with your Web App URL
-2. Host the `/public` folder (use GitHub Pages, Netlify, or any hosting)
-
-### 4. Create Admin Account (2 minutes)
+### 3. Create Admin Account (2 minutes)
 
 **Simple method - Using the registration endpoint:**
 
@@ -65,17 +65,17 @@ function createAdmin() {
 ## First Steps
 
 ### Login to Admin Panel
-1. Open `admin.html`
+1. Open your Web App URL with `?page=admin`: `https://script.google.com/.../exec?page=admin`
 2. Login with: `admin@example.com` / `admin123`
 3. Create your first store
 
 ### Setup Store
 1. Admin creates store with staff credentials
-2. Staff logs into `staff.html`
-3. Staff creates stamp card in Settings tab
+2. Staff opens: `https://script.google.com/.../exec?page=staff`
+3. Staff logs in and creates stamp card in Settings tab
 
 ### Test Customer Flow
-1. Open `index.html`
+1. Customer opens: `https://script.google.com/.../exec` (default page)
 2. Register as customer
 3. Show QR code to staff (or staff can enter email manually)
 4. Staff issues stamps
@@ -85,49 +85,50 @@ function createAdmin() {
 ## Folder Structure
 
 ```
-/gas/               - Google Apps Script files
-  Code.gs           - Main API entry point
+/gas/               - All files for Google Apps Script
+  # Script Files
+  Code.gs           - Main API entry point + HTML serving
   Auth.gs           - Authentication
   Database.gs       - Database operations
   StampService.gs   - Stamp logic
   RewardService.gs  - Reward logic
-  StoreService.gs   - Store management
 
-/public/            - Frontend files
+  # HTML Files (frontend)
   index.html        - Customer app
   staff.html        - Staff portal
   admin.html        - Admin panel
-  /css/
-    styles.css      - Styling
-  /js/
-    api.js          - API client
-    app.js          - Customer logic
-    staff.js        - Staff logic
-    admin.js        - Admin logic
-    qr.js           - QR code utilities
+
+  # Included Resources (.html extensions required by GAS)
+  styles.css.html   - CSS styling
+  api.js.html       - API client
+  app.js.html       - Customer logic
+  staff.js.html     - Staff logic
+  admin.js.html     - Admin logic
+  qr.js.html        - QR code utilities
 ```
 
-## Common URLs
+## Application URLs
 
-After deployment, you'll have:
-- Customer App: `https://your-domain.com/index.html`
-- Staff Portal: `https://your-domain.com/staff.html`
-- Admin Panel: `https://your-domain.com/admin.html`
+After deployment, bookmark these URLs (replace `YOUR_WEB_APP_URL` with your actual URL):
+
+- **Customer App**: `https://script.google.com/macros/s/.../exec`
+- **Staff Portal**: `https://script.google.com/macros/s/.../exec?page=staff`
+- **Admin Panel**: `https://script.google.com/macros/s/.../exec?page=admin`
 
 ## Tips
 
-1. **Testing locally**: You can open HTML files directly in browser, but QR scanner needs HTTPS
-2. **Mobile testing**: Use ngrok or similar to test on mobile devices
-3. **Icons**: Add `icon-192.png` and `icon-512.png` for PWA installation
-4. **Customization**: Edit colors in `styles.css` (see `:root` section)
+1. **Share URLs**: Give customers the main URL, staff the `?page=staff` URL
+2. **Bookmarking**: Add to home screen on mobile for app-like experience
+3. **Customization**: Edit colors in `styles.css.html` (see `:root` section)
+4. **HTTPS**: GAS automatically provides HTTPS, so QR scanning works on mobile
 
 ## Need Help?
 
-- Read `DEPLOYMENT.md` for detailed instructions
+- Read `gas/DEPLOYMENT.md` for detailed deployment instructions
 - Check `DATABASE_SCHEMA.md` for database structure
 - Review `CLAUDE.md` for architecture overview
 - Inspect browser console for errors
-- Check Apps Script logs (View → Executions)
+- Check Apps Script logs (Extensions → Apps Script → View → Executions)
 
 ## What's Next?
 
