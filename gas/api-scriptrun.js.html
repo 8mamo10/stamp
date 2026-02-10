@@ -1,0 +1,196 @@
+/**
+ * API Client using google.script.run
+ * No CORS issues when served from GAS
+ */
+
+/**
+ * Helper to promisify google.script.run calls
+ */
+function scriptRun(functionName, ...args) {
+  return new Promise((resolve, reject) => {
+    google.script.run
+      .withSuccessHandler(resolve)
+      .withFailureHandler(reject)
+      [functionName](...args);
+  });
+}
+
+/**
+ * Auth API
+ */
+const AuthAPI = {
+  register: async (email, phone, password, role = "customer") => {
+    try {
+      const result = await scriptRun('clientRegister', email, phone, password, role);
+      return result;
+    } catch (error) {
+      console.error("Register error:", error);
+      throw error;
+    }
+  },
+
+  login: async (email, phone, password) => {
+    try {
+      const result = await scriptRun('clientLogin', email, phone, password);
+      return result;
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
+    }
+  },
+
+  logout: () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+  },
+
+  isLoggedIn: () => {
+    return !!localStorage.getItem("authToken");
+  },
+
+  getUser: () => {
+    const userStr = localStorage.getItem("user");
+    return userStr ? JSON.parse(userStr) : null;
+  },
+
+  saveAuth: (token, user) => {
+    localStorage.setItem("authToken", token);
+    localStorage.setItem("user", JSON.stringify(user));
+  },
+};
+
+/**
+ * Customer API
+ */
+const CustomerAPI = {
+  getCards: async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const result = await scriptRun('clientGetCustomerCards', token);
+      return result;
+    } catch (error) {
+      console.error("Get cards error:", error);
+      throw error;
+    }
+  },
+
+  getRewards: async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const result = await scriptRun('clientGetCustomerRewards', token);
+      return result;
+    } catch (error) {
+      console.error("Get rewards error:", error);
+      throw error;
+    }
+  },
+
+  redeemReward: async (rewardId) => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const result = await scriptRun('clientRedeemReward', token, rewardId);
+      return result;
+    } catch (error) {
+      console.error("Redeem reward error:", error);
+      throw error;
+    }
+  },
+};
+
+/**
+ * Staff API
+ */
+const StaffAPI = {
+  issueStamp: async (customerIdentifier, purchaseAmount) => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const result = await scriptRun('clientIssueStamp', token, customerIdentifier, purchaseAmount);
+      return result;
+    } catch (error) {
+      console.error("Issue stamp error:", error);
+      throw error;
+    }
+  },
+
+  createCard: async (cardName, stampsRequired, rewardDescription, ruleType, ruleValue) => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const result = await scriptRun('clientCreateCard', token, cardName, stampsRequired, rewardDescription, ruleType, ruleValue);
+      return result;
+    } catch (error) {
+      console.error("Create card error:", error);
+      throw error;
+    }
+  },
+
+  confirmRedemption: async (rewardCode) => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const result = await scriptRun('clientConfirmRedemption', token, rewardCode);
+      return result;
+    } catch (error) {
+      console.error("Confirm redemption error:", error);
+      throw error;
+    }
+  },
+
+  getAnalytics: async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const result = await scriptRun('clientGetStoreAnalytics', token);
+      return result;
+    } catch (error) {
+      console.error("Get analytics error:", error);
+      throw error;
+    }
+  },
+};
+
+/**
+ * Admin API
+ */
+const AdminAPI = {
+  createStore: async (storeName, ownerEmail, ownerPhone, ownerPassword) => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const result = await scriptRun('clientCreateStore', token, storeName, ownerEmail, ownerPhone, ownerPassword);
+      return result;
+    } catch (error) {
+      console.error("Create store error:", error);
+      throw error;
+    }
+  },
+
+  getStores: async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const result = await scriptRun('clientGetAllStores', token);
+      return result;
+    } catch (error) {
+      console.error("Get stores error:", error);
+      throw error;
+    }
+  },
+
+  updateStore: async (storeId, updates) => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const result = await scriptRun('clientUpdateStore', token, storeId, updates);
+      return result;
+    } catch (error) {
+      console.error("Update store error:", error);
+      throw error;
+    }
+  },
+
+  getAnalytics: async () => {
+    const token = localStorage.getItem("authToken");
+    try {
+      const result = await scriptRun('clientGetSystemAnalytics', token);
+      return result;
+    } catch (error) {
+      console.error("Get analytics error:", error);
+      throw error;
+    }
+  },
+};
