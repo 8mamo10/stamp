@@ -36,8 +36,9 @@ function doGet(e) {
   if (!path || page) {
     const htmlPage = page || "index";
     try {
-      return HtmlService.createTemplateFromFile(htmlPage)
-        .evaluate()
+      // Use createHtmlOutputFromFile for google.script.run compatibility
+      const template = HtmlService.createTemplateFromFile(htmlPage);
+      return template.evaluate()
         .setTitle("Stamp Card")
         .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
     } catch (error) {
@@ -202,9 +203,16 @@ function getCurrentTimestamp() {
 
 /**
  * Include other HTML files (for templating)
+ * Returns raw content without HTML escaping
  */
 function include(filename) {
-  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+  return HtmlService.createHtmlOutputFromFile(filename)
+    .getContent()
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
 }
 
 /**
