@@ -18,7 +18,8 @@ function doGet(e) {
   if (!path || page) {
     const htmlPage = page || "index";
     try {
-      return HtmlService.createHtmlOutputFromFile(htmlPage)
+      return HtmlService.createTemplateFromFile(htmlPage)
+        .evaluate()
         .setTitle("Stamp Card")
         .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
     } catch (error) {
