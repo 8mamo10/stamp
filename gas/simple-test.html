@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Test</title>
+</head>
+<body>
+  <h1>Simple Test Page</h1>
+  <div id="app-screen">
+    <p>App screen content</p>
+    <button id="show-qr-btn">My QR Code Button</button>
+  </div>
+
+  <script>
+    console.log('Script running');
+    console.log('app-screen:', document.getElementById('app-screen'));
+    console.log('show-qr-btn:', document.getElementById('show-qr-btn'));
+
+    if (typeof google !== 'undefined' && google.script) {
+      console.log('google.script.run is available');
+    } else {
+      console.log('google.script.run is NOT available');
+    }
+  </script>
+</body>
+</html>

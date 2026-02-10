@@ -36,14 +36,10 @@ function doGet(e) {
   if (!path || page) {
     const htmlPage = page || "index";
     try {
-      // Use createHtmlOutputFromFile for google.script.run compatibility
-      const template = HtmlService.createTemplateFromFile(htmlPage);
-      return template.evaluate()
-        .setTitle("Stamp Card")
-        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+      return buildHtmlPage(htmlPage);
     } catch (error) {
-      Logger.log("Error loading HTML: " + error.message);
-      return HtmlService.createHtmlOutput("<h1>Page not found</h1>");
+      Logger.log("Error loading HTML: " + error.message + " | Stack: " + error.stack);
+      return HtmlService.createHtmlOutput("<h1>Page not found: " + error.message + "</h1>");
     }
   }
 
@@ -221,4 +217,26 @@ function include(filename) {
  */
 function getWebAppUrl() {
   return ScriptApp.getService().getUrl();
+}
+
+/**
+ * Build HTML page by reading file and manually processing includes
+ */
+function buildHtmlPage(pageName) {
+  // Read the base HTML file
+  let html = DriveApp.getFileById(ScriptApp.getScriptId())
+    .getBlob()
+    .getDataAsString();
+
+  // Actually, we can't read files that way. Let's use a different approach.
+  // We'll read the HTML as a template but process it differently.
+
+  const template = HtmlService.createTemplateFromFile(pageName);
+
+  // Make include function available to template
+  template.include = include;
+
+  return template.evaluate()
+    .setTitle("Stamp Card")
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
