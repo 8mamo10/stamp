@@ -14,34 +14,41 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Technology Stack
 - **Backend**: Google Apps Script (GAS)
 - **Database**: Google Sheets (multi-sheet structure)
-- **Frontend**: Plain HTML/CSS/JavaScript PWA
+- **Frontend**: Plain HTML/CSS/JavaScript (served from GAS)
 - **Authentication**: Email/Phone + Password
+- **Deployment**: All-in-one on GAS (no external hosting required)
 
 ## Project Structure
 
 ```
 /gas/
-  Code.gs           - Main GAS entry point (doGet, doPost)
+  # Backend Script Files
+  Code.gs           - Main GAS entry point (doGet, doPost) + HTML serving
   Auth.gs           - Authentication logic
   Database.gs       - Google Sheets CRUD operations
   StampService.gs   - Stamp issuance and card logic
   RewardService.gs  - Reward generation and redemption
+  StoreService.gs   - Store management and analytics
 
-/public/
+  # Frontend HTML Files
   index.html        - Customer app
   staff.html        - Store staff app
   admin.html        - Admin panel
-  /css/
-    styles.css      - Global styles
-  /js/
-    app.js          - Customer app logic
-    staff.js        - Staff app logic
-    admin.js        - Admin panel logic
-    api.js          - API client
-    qr.js           - QR code generation/scanning
 
-  manifest.json     - PWA manifest
-  sw.js             - Service worker
+  # Included Resources (with .html extension for GAS)
+  styles.css.html   - Global styles
+  api.js.html       - API client
+  app.js.html       - Customer app logic
+  staff.js.html     - Staff app logic
+  admin.js.html     - Admin panel logic
+  qr.js.html        - QR code generation/scanning
+
+/public/
+  # Original source files (for reference/development only)
+  # These are NOT deployed - use /gas/ for deployment
+  index.html, staff.html, admin.html
+  /css/styles.css
+  /js/api.js, app.js, staff.js, admin.js, qr.js
 ```
 
 ## Database Schema (Google Sheets)
@@ -64,13 +71,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Sheet: Rewards**
 - Columns: rewardId, customerCardId, customerId, storeId, rewardCode, status (available/redeemed), createdAt, redeemedAt
 
-## Development Commands
+## Development Workflow
 
-Since this is a GAS project, development workflow:
+Since everything is deployed on GAS:
 
-1. **Local Development**: Edit files locally, then copy to GAS editor
-2. **Testing**: Use GAS web app preview URL
-3. **Deployment**: Deploy as web app from GAS editor
+1. **Local Development**: Edit files in `/public/` directory (source files)
+2. **Prepare for GAS**: Copy files to `/gas/` directory:
+   - Copy `.gs` files as-is
+   - Copy HTML files as-is
+   - Copy CSS/JS files with `.html` extension (e.g., `api.js` → `api.js.html`)
+   - Update HTML files to use `<?!= include('filename'); ?>` for CSS/JS
+3. **Upload to GAS**: Copy all `/gas/` files to Google Apps Script editor
+4. **Configure**: Update `SPREADSHEET_ID` in `Code.gs`
+5. **Deploy**: Deploy as web app (Execute as: Me, Access: Anyone)
+6. **Test**: Access via `https://script.google.com/.../exec?page=admin`
 
 ## Key Features
 
@@ -84,13 +98,30 @@ Since this is a GAS project, development workflow:
 
 ## API Endpoints (GAS)
 
-All requests to GAS web app use doPost/doGet:
+All requests to GAS web app use `doPost`/`doGet` with `?path=` parameter:
 
-- POST /api/auth/register
-- POST /api/auth/login
-- GET /api/customer/cards
-- POST /api/staff/issueStamp
-- POST /api/staff/redeemReward
-- GET /api/store/analytics
-- POST /api/admin/createStore
-- GET /api/admin/stores
+**Authentication (No auth required)**
+- POST `?path=auth/register`
+- POST `?path=auth/login`
+
+**Customer Endpoints**
+- GET `?path=customer/cards`
+- GET `?path=customer/rewards`
+- POST `?path=customer/redeemReward`
+
+**Staff Endpoints**
+- POST `?path=staff/issueStamp`
+- POST `?path=staff/createCard`
+- POST `?path=staff/confirmRedemption`
+- GET `?path=store/analytics`
+
+**Admin Endpoints**
+- POST `?path=admin/createStore`
+- POST `?path=admin/updateStore`
+- GET `?path=admin/stores`
+- GET `?path=admin/analytics`
+
+**HTML Pages (via `?page=` parameter)**
+- GET `?page=index` or `/` - Customer app
+- GET `?page=staff` - Staff portal
+- GET `?page=admin` - Admin panel

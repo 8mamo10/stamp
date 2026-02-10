@@ -21,17 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /**
  * Register service worker for PWA
+ * Note: Service workers don't work in GAS-hosted apps due to same-origin restrictions
  */
 function registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-      .then((registration) => {
-        console.log('Service Worker registered:', registration);
-      })
-      .catch((error) => {
-        console.log('Service Worker registration failed:', error);
-      });
-  }
+  // Service worker registration disabled for GAS deployment
+  // GAS apps run on script.google.com domain and cannot register service workers
+  console.log('Service Worker not available in GAS environment');
 }
 
 /**
